@@ -8,11 +8,6 @@ const teacherSchema = mongoose.Schema({
   email: { type: String, required: true },
 });
 
-// const updateTeacherSchema = mongoose.Schema({
-//   favSubject: {type: String, required: true},
-//   class: {type: String, required: true}
-// })
-
 const Teacher = mongoose.model("Teacher", teacherSchema);
 
 module.exports = { Teacher };

@@ -1,4 +1,8 @@
-const { Student } = require("../models/student.model");
+const {
+  Student,
+  validateStudent,
+  validateUpdateStudent,
+} = require("../models/student.model");
 
 const basePath = (req, res) => {
   try {
@@ -28,6 +32,13 @@ const notFound = (req, res) => {
 
 const createStudent = async (req, res) => {
   try {
+    const studentCheck = validateStudent(req.body);
+    if (studentCheck.error) {
+      return res.status(400).json({
+        message: studentCheck.error.message,
+      });
+    }
+
     let studentExist = await Student.findOne({ name: req.body.name });
     if (studentExist) {
       return res.status(400).json({
@@ -43,7 +54,7 @@ const createStudent = async (req, res) => {
         name: student.name,
         email: student.email,
         age: student.age,
-        favSubject: student.favSubject,
+        subject: student.subject,
         class: student.class,
         teacher: student.teacher.ref,
       },
@@ -95,15 +106,27 @@ const fetchAllStudents = async (req, res) => {
 
 const updateStudent = async (req, res) => {
   try {
+    const studentCheck = validateUpdateStudent(req.body);
+    if (studentCheck.error) {
+      return res.status(400).json({
+        message: studentCheck.error.message,
+      });
+    }
     let studentId = req.params.studentId;
-    // let studentExist = await Student.findOne({ studentId });
-    // if (!studentExist) {
-    //   return res.status(400).json({
-    //     message: `this ${studentExist.name} does not exist`,
-    //   });
-    // }
+    let studentExist = await Student.findById(studentId);
+    if (!studentExist) {
+      return res.status(400).json({
+        message: `Student does not exist`,
+      });
+    }
 
-    let student = await Student.findByIdAndUpdate(studentId, req.body);
+    let student = await Student.findByIdAndUpdate(
+      studentId,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
     res.status(201).json({
       message: " successful",
       data: student,

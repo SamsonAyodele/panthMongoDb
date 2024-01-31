@@ -61,14 +61,18 @@ const fetchTeacherById = async (req, res) => {
 
 const updateTeacher = async (req, res) => {
   try {
-    let teacherExist = await Teacher.findOne({ name: req.body.name });
-    if (teacherExist) {
+    let teacherId = req.params.teacherId;
+    let teacherExist = await Teacher.findById(teacherId);
+    if (!teacherExist) {
       return res.status(400).json({
-        message: `Teacher ${teacherExist.name} already exist`,
+        message: "Cant find Teacher",
       });
     }
-    let teacherId = req.params.teacherId;
-    const teacher = await Teacher.updateOne(teacherId, req.body);
+    let teacher = await Teacher.findByIdAndUpdate(
+      teacherId,
+      { $set: req.body },
+      { new: true }
+    );
     res.status(200).json({
       message: "Teacher Updated Successfully",
       data: teacher,
@@ -92,7 +96,7 @@ const deleteTeacher = async (req, res) => {
       });
     }
 
-    let teacher = await Teacher.findOneAndDelete(teacherId);
+    let teacher = await Teacher.findByIdAndDelete(teacherId);
     res.status(201).json({
       message: " successfully deleted",
       data: teacher,
