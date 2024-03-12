@@ -91,10 +91,10 @@ const fetchById = async (req, res) => {
 
 const fetchAllStudents = async (req, res) => {
   try {
-    let students = await Student.find({}).populate("teacher");
+    let student = await Student.find({}).populate("teacher");
     res.status(201).json({
       message: " successful",
-      data: students,
+      data: student,
     });
   } catch (error) {
     console.log(error);

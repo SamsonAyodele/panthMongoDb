@@ -49,9 +49,9 @@ server.listen(2000, async () => {
   console.log("server is listening on port 2000");
   try {
     console.log("server connected");
-    await mongoose.connect("mongodb://127.0.0.1:27017/store-collections");
+    await mongoose.connect("mongodb://127.0.0.1:27017/school-collections");
     console.log("database connected");
   } catch (error) {
-    console.log(err);
+    console.log(error);
   }
 });
